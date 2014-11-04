@@ -5,15 +5,13 @@ apply plugin: 'application'
 mainClassName = "Main"
 applicationDefaultJvmArgs = ["-Dfoo=bar"]
 
-task createDocs {
-    def docs = file("$buildDir/docs")
-    outputs.dir docs
-    doLast {
-        docs.mkdirs()
-        new File(docs, "readme.txt").write("Read me!")
-    }
+//Adds additional directory to the final distribution, i.e. top-level directory in zip-file.
+applicationDistribution.from("src/main/webapp/") {
+    into "config"
 }
 
-applicationDistribution.from(createDocs) {
-    into "docs"
+//Adds web resources into the application jar file in an exploded fashion.
+task copyWebResources(type: Copy) {
+  from 'src/main/webapp'
+  into 'build/classes/main/src/main/webapp'
 }
