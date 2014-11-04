@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'application'
+
+mainClassName = "Main"
+applicationDefaultJvmArgs = ["-Dfoo=bar"]
+
+task createDocs {
+    def docs = file("$buildDir/docs")
+    outputs.dir docs
+    doLast {
+        docs.mkdirs()
+        new File(docs, "readme.txt").write("Read me!")
+    }
+}
+
+applicationDistribution.from(createDocs) {
+    into "docs"
+}
